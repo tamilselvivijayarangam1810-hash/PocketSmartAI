@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Party Planner{% endblock %}
+{% block content %}
+<div class="page-head"><span class="eyebrow">PARTY PLANNER</span><h1>Plan an event budget</h1><p>Allocate spending across the major event needs.</p></div>
+<form id="partyForm" class="card form-grid">
+  <label>Budget (₹)<input name="budget" type="number" min="1" required></label>
+  <label>Guests<input name="guests" type="number" min="1" required></label>
+  <label>Event type<input name="event_type" placeholder="Birthday" required></label>
+  <label>Venue<input name="venue" value="home"></label>
+  <label>City<input name="city" value="Chennai"></label>
+  <label>Preferences<input name="preferences" placeholder="Vegetarian, simple decor"></label>
+  <button class="btn primary full" type="submit">Generate Party Plan</button>
+</form>
+<div id="result"></div>
+{% endblock %}
+{% block scripts %}
+<script>
+document.getElementById("partyForm").addEventListener("submit", async e=>{
+ e.preventDefault();
+ const f=Object.fromEntries(new FormData(e.target));
+ f.budget=Number(f.budget);f.guests=Number(f.guests);
+ await renderPlanner("/api/generate-party",f);
+});
+</script>
+{% endblock %}

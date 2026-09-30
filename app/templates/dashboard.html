@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="page-head"><div><span class="eyebrow">DASHBOARD</span><h1>Your planning workspace</h1><p id="userEmail"></p></div></div>
+<section class="grid three">
+  <a class="card clickable" href="/home"><h2>🏠 Home</h2><p>Interior budget planning</p></a>
+  <a class="card clickable" href="/party"><h2>🎉 Party</h2><p>Event budget planning</p></a>
+  <a class="card clickable" href="/jewelry"><h2>💎 Jewelry</h2><p>Occasion & outfit matching</p></a>
+</section>
+<section class="card">
+  <div class="section-head"><h2>Recent plans</h2><a href="/history">View all</a></div>
+  <div id="recent" class="stack"></div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+(async()=>{
+ const s=await api("/api/session-info");
+ if(!s.logged_in){location.href="/login";return;}
+ document.getElementById("userEmail").textContent=s.email;
+ const h=await api("/api/history");
+ document.getElementById("recent").innerHTML=(h.items||[]).slice(0,5).map(x =>
+ `<div class="history-row"><b>${x.planner_type}</b><span>₹${Number(x.budget).toLocaleString()}</span><small>${new Date(x.created_at).toLocaleString()}</small></div>`
+ ).join("") || "<p>No plans yet.</p>";
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Jewelry Planner{% endblock %}
+{% block content %}
+<div class="page-head"><span class="eyebrow">JEWELRY PLANNER</span><h1>Match jewelry to your occasion</h1><p>Optionally upload an outfit image for multimodal analysis.</p></div>
+<form id="jewelryForm" class="card form-grid" enctype="multipart/form-data">
+  <label>Budget (₹)<input name="budget" type="number" min="1" required></label>
+  <label>Occasion<input name="occasion" placeholder="Wedding" required></label>
+  <label>Style<input name="style" value="elegant"></label>
+  <label>Outfit color<input name="outfit_color" placeholder="Optional"></label>
+  <label class="full">Preferences<input name="preferences" placeholder="Minimal, traditional, lightweight"></label>
+  <label class="full">Outfit image <input name="outfit_image" type="file" accept="image/png,image/jpeg,image/webp"></label>
+  <button class="btn primary full" type="submit">Generate Jewelry Plan</button>
+</form>
+<div id="result"></div>
+{% endblock %}
+{% block scripts %}
+<script>
+document.getElementById("jewelryForm").addEventListener("submit", async e=>{
+ e.preventDefault();
+ const fd=new FormData(e.target);
+ await renderPlanner("/api/generate-jewelry",fd,true);
+});
+</script>
+{% endblock %}

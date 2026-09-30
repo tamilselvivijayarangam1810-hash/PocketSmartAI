@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Home Planner{% endblock %}
+{% block content %}
+<div class="page-head"><span class="eyebrow">HOME INTERIOR</span><h1>Build a room plan</h1><p>Set your budget, rooms and required items.</p></div>
+<form id="homeForm" class="card form-grid">
+  <label>Budget (₹)<input name="budget" type="number" min="1" required></label>
+  <label>Style<input name="style" value="modern" required></label>
+  <label>City<input name="city" value="Chennai"></label>
+  <label>Rooms <input name="rooms" value="Living Room, Bedroom"></label>
+  <label class="full">Items (category:quantity, comma-separated)
+    <input name="items" value="lights:2, ceiling fan:1, side table:2">
+  </label>
+  <button class="btn primary full" type="submit">Generate Home Plan</button>
+</form>
+<div id="result"></div>
+{% endblock %}
+{% block scripts %}
+<script>
+document.getElementById("homeForm").addEventListener("submit", async e=>{
+ e.preventDefault();
+ const f=Object.fromEntries(new FormData(e.target));
+ const items=f.items.split(",").map(x=>{const [category,quantity]=x.split(":");return {category:category.trim(),quantity:Number(quantity||1)}});
+ const body={budget:Number(f.budget),style:f.style,city:f.city,rooms:f.rooms.split(",").map(x=>x.trim()).filter(Boolean),items};
+ await renderPlanner("/api/generate-home",body);
+});
+</script>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}History{% endblock %}
+{% block content %}
+<div class="page-head"><span class="eyebrow">HISTORY</span><h1>Your saved plans</h1></div>
+<section class="card"><div id="history" class="stack"></div></section>
+{% endblock %}
+{% block scripts %}
+<script>
+(async()=>{
+ const r=await api("/api/history");
+ document.getElementById("history").innerHTML=(r.items||[]).map(x=>{
+   const rec=x.response.recommendations||[];
+   return `<article class="history-card"><div class="section-head"><h3>${x.planner_type.toUpperCase()}</h3><b>₹${Number(x.budget).toLocaleString()}</b></div>
+   <small>${new Date(x.created_at).toLocaleString()}</small><p>${x.response.summary||""}</p>
+   <ul>${rec.slice(0,5).map(i=>`<li>${i.name} — ₹${i.estimated_price} × ${i.quantity}</li>`).join("")}</ul></article>`
+ }).join("") || "<p>No saved recommendations yet.</p>";
+})();
+</script>
+{% endblock %}

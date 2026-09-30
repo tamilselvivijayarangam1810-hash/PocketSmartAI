@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Register{% endblock %}
+{% block content %}
+<div class="auth-card">
+  <h1>Create account</h1>
+  <p>Start saving your PocketSmart plans.</p>
+  <form id="registerForm">
+    <label>Email<input name="email" type="email" required></label>
+    <label>Password<input name="password" type="password" minlength="6" required></label>
+    <button class="btn primary" type="submit">Register</button>
+  </form>
+  <div id="message" class="message"></div>
+  <p>Already registered? <a href="/login">Login</a></p>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+document.getElementById("registerForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const body = Object.fromEntries(new FormData(e.target));
+  const r = await api("/api/register", {method:"POST", body: JSON.stringify(body)});
+  document.getElementById("message").textContent = r.message || "Done";
+  if (r.ok) setTimeout(() => location.href="/login", 600);
+});
+</script>
+{% endblock %}
